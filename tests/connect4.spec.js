@@ -40,4 +40,8 @@ describe('Connect4 Test', () => {
 		// Assert
 		expect(result).toBe(expectedResult);
 	});
+
+	test('Validates Winner', () => {
+
+	})
 });
