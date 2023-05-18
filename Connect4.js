@@ -116,9 +116,9 @@ export default class Connect4 {
 			for (let j = 6; j > 2; j--) {
 				if (
 					this.board[i][j] !== null
-					&& this.board[i - 1][j - 1] == this.board[i][j]
-					&& this.board[i - 2][j - 2] == this.board[i][j]
-					&& this.board[i - 3][j - 3] == this.board[i][j]
+					&& this.board[i + 1][j - 1] == this.board[i][j]
+					&& this.board[i + 2][j - 2] == this.board[i][j]
+					&& this.board[i + 3][j - 3] == this.board[i][j]
 				) {
 					return this.board[i][j];
 				}
