@@ -4,7 +4,21 @@
  * Connect4 class
  */
 export default class Connect4 {
-	constructor() { }
+	constructor() {
+		this.generateBoard();
+	}
+
+
+	/**
+	 * Draws the current board
+	 */
+	drawBoard() {
+		for (let i = 0; i < 6; i++) {
+			console.log(`| ${this.getStringRepresentation(this.board[i][0])} | ${this.getStringRepresentation(this.board[i][1])} | ${this.getStringRepresentation(this.board[i][2])} | ${this.getStringRepresentation(this.board[i][3])} | ${this.getStringRepresentation(this.board[i][4])} | ${this.getStringRepresentation(this.board[i][5])} | ${this.getStringRepresentation(this.board[i][6])} |`)
+			console.log('-----------------------------')
+			
+		}
+	}
 	
 
 	/**
@@ -42,7 +56,15 @@ export default class Connect4 {
 	 * @param {number} move 
 	 */
 	makeMove(player, move) {
-		return null;
+		if (!this.validMove(move)) return null;	// Check the move is valid
+		// Find the first empty cell in the column
+		for (let i = 5; i >= 0; i--) {
+			if (this.board[i][move] === null) {
+				this.board[i][move] = player;
+				break;
+			}
+		}
+		return move;
 	}
 
 	/**
@@ -111,5 +133,14 @@ export default class Connect4 {
 
 		// There is a tie
 		return null
+	}
+
+	getStringRepresentation(item) {
+		if (item == 1) {
+			return 'X'
+		} else if (item == 0) {
+			return 'O'
+		}
+		return ' '
 	}
 }
