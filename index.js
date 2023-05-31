@@ -2,6 +2,7 @@ import {Client} from './Client.js';
 import Connect4 from './Connect4.js';
 
 import readline from 'readline'
+import Connect4AI from './Connect4AI.js';
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -16,10 +17,8 @@ const tournamentId = 12;
 
 
 const game = new Connect4();
-
-
-game.drawBoard();
-play(game);
+const ai = new Connect4AI(game);
+play();
 
 
 
@@ -28,19 +27,29 @@ play(game);
  * @param {*} game 
  * @param {*} player 
  */
-function play(game, player = 0) {
+function play(player = 0) {
 	if (game.gameFinished() === false) {
-			rl.question('Next move? ', (answer) => { 
-				const movement = parseInt(answer);
-				if (game.validMove(movement)) {
-					game.makeMove(player, movement);
-					game.drawBoard();
-					play(game, player === 0 ? 1 : 0);
-				} else {
-					console.log('Invalid move');
-					play(game, player);
-				}
-			});
+		if (player === 0) {
+				const movement = ai.getMovement();
+				game.makeMove(player, movement);
+				
+				game.drawBoard();
+				play(player === 0 ? 1 : 0);				
+		} else {
+			
+				rl.question('Next move? ', (answer) => { 
+					const movement = parseInt(answer);
+					if (game.validMove(movement)) {
+						game.makeMove(player, movement);
+						game.drawBoard();
+						play(player === 0 ? 1 : 0);
+					} else {
+						console.log('Invalid move');
+						play(player);
+					}
+				});
+			}
+
 	} else {
 		console.log('Game finished');
 		

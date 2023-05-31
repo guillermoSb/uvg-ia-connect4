@@ -60,15 +60,37 @@ export default class Connect4 {
 	 */
 	makeMove(player, move) {
 		if (!this.validMove(move)) return null;	// Check the move is valid
+		let column = 0
+		let row = 0
 		// Find the first empty cell in the column
 		for (let i = 5; i >= 0; i--) {
 			if (this.board[i][move] === null) {
 				this.board[i][move] = player;
+				row = i
+				column = move
 				break;
 			}
 		}
-		return move;
+		this.lastMove = {row, column};
+		return {row, column};
 	}
+
+	undoMove(move) {
+		const {row, column} = move;
+		this.board[row][column] = null;
+	}
+
+
+	getScore() {
+		// Check rows
+		let winner = `${this.gameFinished()}-`;
+		if (winner == false) throw new Error('Game is not finished');
+		if (winner = '0-') return 1;
+		if (winner = '1-') return -1
+		return 0;
+	}
+
+	
 
 	/**
 	 * Validates if the game has finished

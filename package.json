@@ -11,6 +11,7 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"perf_hooks": "0.0.1",
 		"socket.io": "^1.4.6",
 		"socket.io-client": "^1.4.6",
 		"ts-jest": "^29.1.0"
