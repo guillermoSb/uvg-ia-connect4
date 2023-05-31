@@ -1,27 +1,50 @@
 import {Client} from './Client.js';
 import Connect4 from './Connect4.js';
 
+import readline from 'readline'
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+
 const url = 'http://localhost';
 const port = 4000;
 const userName = 'D4rthGuille';
 const tournamentId = 12;
 
-let connect4 = new Connect4();
-connect4.makeMove(1, 6);
-connect4.makeMove(0, 5);
-connect4.makeMove(1, 5);
 
-connect4.makeMove(0, 4);
-connect4.makeMove(0, 4);
-connect4.makeMove(1, 4);
-
-connect4.makeMove(0, 3);
-connect4.makeMove(0, 3);
-connect4.makeMove(0, 3);
-connect4.makeMove(0, 3);
+const game = new Connect4();
 
 
-connect4.drawBoard();
-console.log(connect4.gameFinished())
+game.drawBoard();
+play(game);
 
 
+
+/**
+ * Method to test my AI
+ * @param {*} game 
+ * @param {*} player 
+ */
+function play(game, player = 0) {
+	if (game.gameFinished() === false) {
+			rl.question('Next move? ', (answer) => { 
+				const movement = parseInt(answer);
+				if (game.validMove(movement)) {
+					game.makeMove(player, movement);
+					game.drawBoard();
+					play(game, player === 0 ? 1 : 0);
+				} else {
+					console.log('Invalid move');
+					play(game, player);
+				}
+			});
+	} else {
+		console.log('Game finished');
+		
+		game.drawBoard();
+		rl.close();
+	}
+}

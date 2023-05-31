@@ -4,6 +4,9 @@
  * Connect4 class
  */
 export default class Connect4 {
+
+	
+	
 	constructor() {
 		this.generateBoard();
 	}
@@ -128,7 +131,7 @@ export default class Connect4 {
 
 		// Check if the board is full
 		for (let i = 0; i < 7; i++) {
-			if (this.board[0][i] !== null) return false;	// There is still space for more moves
+			if (this.board[0][i] === null) return false;	// There is still space for more moves
 		}
 
 		// There is a tie
