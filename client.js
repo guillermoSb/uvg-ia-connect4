@@ -1,5 +1,8 @@
 import io from 'socket.io-client';
+import Connect4AI from './Connect4AI.js';
+import Connect4 from './Connect4.js';
 
+// 192.168.1.131
 
 export class Client {
 	/**
@@ -16,6 +19,8 @@ export class Client {
 		this.userName = userName;
 		this.tournamentId = tournamentId;
 		this.connected = false;
+		this.game = new Connect4();
+		this.ai = new Connect4AI(this.game);
 		this.configure();
 	}
 	
@@ -53,6 +58,7 @@ export class Client {
 			const gameId = data.game_id;
 			const playerTurnId = data.player_turn_id;
 			const board = data.board;
+
 			// Choose movement
 			// Emit the new movement
 		});

@@ -12,13 +12,14 @@ const rl = readline.createInterface({
 
 const url = 'http://localhost';
 const port = 4000;
-const userName = 'D4rthGuille';
-const tournamentId = 12;
+const userName = 'Guille';
+const tournamentId = 142857;
+
+const client = new Client(url, port, userName, tournamentId);
 
 
-const game = new Connect4();
-const ai = new Connect4AI(game);
-play();
+// const game = new Connect4();
+// const ai = new Connect4AI(game);
 
 
 
