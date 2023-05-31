@@ -10,7 +10,7 @@ const rl = readline.createInterface({
 });
 
 
-const url = 'http://localhost';
+const url = '192.168.1.131';
 const port = 4000;
 const userName = 'Guille';
 const tournamentId = 142857;
