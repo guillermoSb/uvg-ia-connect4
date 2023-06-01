@@ -24,7 +24,7 @@ const tournamentId = 142857;
 
 
 const game = new Connect(4,6,7)
-const ai = new ConnectAI(game, game.playerDict[0]);
+const ai = new ConnectAI(game, 0, 1);
 
 play()
 
@@ -38,8 +38,10 @@ function play(player = 0) {
 	
 	if (game.gameFinished().finished == false) {
 		if (player === 0) {
+			const startTime = performance.now();
 			const move = ai.getMove();
-			
+			const endTime = performance.now();
+			console.log('Time: ', endTime - startTime);
 			game.apply(move, player);
 			play(player === 0 ? 1 : 0);
 		} else {

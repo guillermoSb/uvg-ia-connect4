@@ -2,35 +2,55 @@ import Agent from "./Agent.js";
 import { performance } from 'perf_hooks'
 
 export default class ConnectAI extends Agent {
-	constructor(game, player) {
+	constructor(game, player, oponent) {
 		super(game);
 		this.player = player;
+		this.oponent = oponent;
 		this.positionMap = {}
-		
+
 	}
 
 
 	getMove() {
 		if (!this.game.boardTouched) {
+			this.game.boardTouched = true;
 			return 3;
 		}
-		const startTime = performance.now();
 		let bestMove = null;
 		let bestScore = -Infinity;
-				for (let i = 0; i < 7; i++) {
-					if (this.game.validate(i)) {
-						const move = this.game.apply(i, this.player);
-						const score = this.miniMax(false, -Infinity, Infinity);
-						this.game.undoMove(move);
-						if (score > bestScore) {
-							bestMove = i;
-							bestScore = score;
-						}
-					}			
-			}	
+		for (let i = 0; i < 7; i++) {
+			if (this.game.validate(i)) {
+				// Check first that on the next move the opponent cannot win
+				const move = this.game.apply(i, this.oponent);
+				const { finished, winner } = this.game.gameFinished();
+	
+				if (finished && winner === this.game.playerDict[this.oponent]) {
+					this.game.undoMove(move);
+					return i;
+				} else if (winner === this.game.playerDict[this.player]) {
+					this.game.undoMove(move);
+					return i;
+				}
+				this.game.undoMove(move);
+			}
+		}
 		
-		const endTime = performance.now();
-		console.log(`Time: ${endTime - startTime} ms`);
+		for (let i = 0; i < 7; i++) {
+			if (this.game.validate(i)) {
+				// Check first that on the next move the opponent cannot win
+				const move = this.game.apply(i, this.player);
+				if (move.y == 0) {
+					this.game.undoMove(move);
+					continue;
+				}
+				const score = this.miniMax(false, -Infinity, Infinity);
+				this.game.undoMove(move);
+				if (score > bestScore) {
+					bestMove = i;
+					bestScore = score;
+				}
+			}
+		}		
 		return bestMove;
 	}
 
@@ -40,7 +60,7 @@ export default class ConnectAI extends Agent {
 	}
 
 	heuristic0(board) {
-		
+
 		let score = 0;
 		for (let i = 0; i < this.game.m; i++) {
 			for (let j = 0; j < this.game.n; j++) {
@@ -95,7 +115,7 @@ export default class ConnectAI extends Agent {
 			if (count == 2 && (start - 1 > 0 || end + 1 < this.game.n - 2)) {
 				// Potential win
 				if (board[i][start - 2] === null || board[i][end + 2] === null) {
-					return 900000	
+					return 900000
 				}
 			}
 		}
@@ -129,7 +149,7 @@ export default class ConnectAI extends Agent {
 				rowScore = 40000;
 			} else if (rowSpaces == 4) {
 				rowScore = 30000;
-			} else if (rowSpaces == 3 && playerInRow) { 
+			} else if (rowSpaces == 3 && playerInRow) {
 				rowScore = 20000;
 			}
 		}
@@ -164,7 +184,7 @@ export default class ConnectAI extends Agent {
 				columnScore = 40000;
 			} else if (columnSpaces == 4) {
 				columnScore = 30000;
-			} else if (columnSpaces == 3 && playerInColumn) { 
+			} else if (columnSpaces == 3 && playerInColumn) {
 				columnScore = 20000;
 			}
 		}
@@ -205,12 +225,12 @@ export default class ConnectAI extends Agent {
 		if (playerInColumn1Or5) return 70
 		if (playerInColumn2Or4) return 120
 
-		
+
 		return this.heuristic0(board);
 
 
 
-		
+
 	}
 
 
@@ -239,9 +259,9 @@ export default class ConnectAI extends Agent {
 			const score = this.game.getScore();
 			return score;
 		}
-		if (depth == 8) {
+		if (depth == 7) {
 			let score = this.evaluate(this.game.board);
-			
+
 			return score
 		}
 		if (isMax) {
@@ -250,12 +270,20 @@ export default class ConnectAI extends Agent {
 				if (this.game.validate(i)) {
 					const move = this.game.apply(i, 0);
 					const score = this.miniMax(false, alpha, beta, depth + 1);
-					this.game.undoMove(move);
 					bestScore = Math.max(score, bestScore);
 					alpha = Math.max(alpha, score);
+					const newGameResult = this.game.gameFinished();
+					if (newGameResult.finished && newGameResult.winner == 1) {
+						// Stop searching if we find a winning move
+						console.log('possible win')
+						this.game.undoMove(move);
+						return score;
+					}
+					this.game.undoMove(move);
 					if (beta <= alpha) {
 						break;
 					}
+
 				}
 			}
 			return bestScore;
@@ -265,13 +293,13 @@ export default class ConnectAI extends Agent {
 				if (this.game.validate(i)) {
 					const move = this.game.apply(i, 1);
 					const score = this.miniMax(true, alpha, beta, depth + 1);
-					this.game.undoMove(move);
 					bestScore = Math.min(score, bestScore);
 					beta = Math.min(beta, score);
+					this.game.undoMove(move);
 					if (beta <= alpha) {
-
 						break;
 					}
+
 				}
 			}
 			return bestScore;

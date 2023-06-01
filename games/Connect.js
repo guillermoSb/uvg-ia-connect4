@@ -169,6 +169,7 @@ export default class Connect extends Game {
 				}
 			}
 		}
+		
 		return null;
 	}
 
