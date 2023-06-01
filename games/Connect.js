@@ -7,12 +7,13 @@ export default class Connect extends Game {
 		1: 'O'	// min
 	}
 
-	constructor(k, m, n) {
+	constructor(k, m, n, board = null) {
 		super()
 		this.k = k;
 		this.m = m;
 		this.n = n;
-		this.generateBoard();
+		this.boardTouched = false;
+		this.generateBoard(board);
 	}
 
 	getScore() {
@@ -132,7 +133,7 @@ export default class Connect extends Game {
 	/**
 	 * Generates a connect game board of size m x n
 	 */
-	generateBoard() {
+	generateBoard(board = null) {
 		this.board = [];
 		for (let i = 0; i < this.m; i++) {
 			this.board.push([]);
@@ -159,6 +160,7 @@ export default class Connect extends Game {
 	 * @param {number} player 
 	 */
 	apply(move, player) {
+		this.boardTouched = true;
 		if (this.validate(move)) {
 			for (let i = this.m - 1; i >= 0; i--) {
 				if (this.board[i][move] === null) {

@@ -6,6 +6,32 @@ export default class ConnectAI extends Agent {
 		super(game);
 		this.player = player;
 		this.positionMap = {}
+		
+	}
+
+
+	getMove() {
+		if (!this.game.boardTouched) {
+			return 3;
+		}
+		const startTime = performance.now();
+		let bestMove = null;
+		let bestScore = -Infinity;
+				for (let i = 0; i < 7; i++) {
+					if (this.game.validate(i)) {
+						const move = this.game.apply(i, this.player);
+						const score = this.miniMax(false, -Infinity, Infinity);
+						this.game.undoMove(move);
+						if (score > bestScore) {
+							bestMove = i;
+							bestScore = score;
+						}
+					}			
+			}	
+		
+		const endTime = performance.now();
+		console.log(`Time: ${endTime - startTime} ms`);
+		return bestMove;
 	}
 
 
@@ -14,7 +40,7 @@ export default class ConnectAI extends Agent {
 	}
 
 	heuristic0(board) {
-		console.log('using h0')
+		
 		let score = 0;
 		for (let i = 0; i < this.game.m; i++) {
 			for (let j = 0; j < this.game.n; j++) {
@@ -179,7 +205,7 @@ export default class ConnectAI extends Agent {
 		if (playerInColumn1Or5) return 70
 		if (playerInColumn2Or4) return 120
 
-
+		
 		return this.heuristic0(board);
 
 
@@ -215,6 +241,7 @@ export default class ConnectAI extends Agent {
 		}
 		if (depth == 8) {
 			let score = this.evaluate(this.game.board);
+			
 			return score
 		}
 		if (isMax) {

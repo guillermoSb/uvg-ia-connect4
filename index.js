@@ -38,23 +38,9 @@ function play(player = 0) {
 	
 	if (game.gameFinished().finished == false) {
 		if (player === 0) {
-			const startTime = performance.now();
-			let bestMove = null;
-			let bestScore = -Infinity;
-				for (let i = 0; i < 7; i++) {
-					if (game.validate(i)) {
-						const move = game.apply(i, player);
-						const score = ai.miniMax(false, -Infinity, Infinity);
-						game.undoMove(move);
-						if (score > bestScore) {
-							bestMove = i;
-							bestScore = score;
-						}
-					}			
-			}	
-			const endTime = performance.now();
-			console.log(`Time: ${endTime - startTime} ms`);
-			game.apply(bestMove, player);
+			const move = ai.getMove();
+			
+			game.apply(move, player);
 			play(player === 0 ? 1 : 0);
 		} else {
 				game.drawBoard();
