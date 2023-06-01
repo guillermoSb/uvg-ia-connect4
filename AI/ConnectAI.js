@@ -39,10 +39,6 @@ export default class ConnectAI extends Agent {
 			if (this.game.validate(i)) {
 				// Check first that on the next move the opponent cannot win
 				const move = this.game.apply(i, this.player);
-				if (move.y == 0) {
-					this.game.undoMove(move);
-					continue;
-				}
 				const score = this.miniMax(false, -Infinity, Infinity);
 				this.game.undoMove(move);
 				if (score > bestScore) {
