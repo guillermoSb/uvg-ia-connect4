@@ -11,13 +11,13 @@ export default class ConnectAI extends Agent {
 	}
 
 
-	getMove() {
+	getMovement() {
 		if (!this.game.boardTouched) {
 			this.game.boardTouched = true;
 			return 3;
 		}
 		let bestMove = null;
-		let bestScore = -Infinity;
+		let bestScore = this.player == 1 ? -Infinity : Infinity;
 		let winnerMove = null;
 		let blockLossMove = null;
 		for (let i = 0; i < 7; i++) {
@@ -25,7 +25,7 @@ export default class ConnectAI extends Agent {
 				// Check first that on the next move the opponent cannot win
 				const move = this.game.apply(i, this.oponent);
 				const { finished, winner } = this.game.gameFinished();
-				if (finished && winner === this.oponent) {
+				if (finished && winner == this.oponent) {
 					this.game.undoMove(move);
 					blockLossMove = i;
 					continue;
@@ -34,7 +34,7 @@ export default class ConnectAI extends Agent {
 				// Check if the move is a winning move
 				const move2 = this.game.apply(i, this.player);
 				const { finished: finished2, winner: winner2 } = this.game.gameFinished();
-				if (finished2 && winner2 === this.player) {
+				if (finished2 && winner2 == this.player) {
 					this.game.undoMove(move2);
 					winnerMove = i;
 					break;
@@ -49,14 +49,17 @@ export default class ConnectAI extends Agent {
 			if (this.game.validate(i)) {
 				// Check first that on the next move the opponent cannot win
 				const move = this.game.apply(i, this.player);
-				const score = this.miniMax(this.player === 1 ? false : true, -Infinity, Infinity);
+				const score = this.miniMax(this.player == 1 ? false : true, -Infinity, Infinity);
 				this.game.undoMove(move);
-				if (score > bestScore) {	
+				if (score > bestScore && this.player == 1) {	
+					bestMove = i;
+					bestScore = score;
+				} else if (score < bestScore && this.player == 2) {
 					bestMove = i;
 					bestScore = score;
 				}
 			}
-		}		
+		}	
 		return bestMove;
 	}
 

@@ -1,10 +1,13 @@
 import io from 'socket.io-client';
-import Connect4AI from './Connect4AI.js';
-import Connect4 from './Connect4.js';
+import Connect from './games/Connect.js';
+import ConnectAI from './AI/ConnectAI.js';
+import { performance } from 'perf_hooks';
 
 // 192.168.1.131
 
-export class Client {
+export default class Client {
+
+	games = {};
 	/**
 	 * Creates a new client
 	 * @param {string} url 
@@ -19,8 +22,7 @@ export class Client {
 		this.userName = userName;
 		this.tournamentId = tournamentId;
 		this.connected = false;
-		this.game = new Connect4();
-		this.ai = new Connect4AI(this.game);
+		
 		this.configure();
 	}
 	
@@ -56,12 +58,30 @@ export class Client {
 		// Handle ready event
 		this.client.on('ready', (data) => {
 			const gameId = data.game_id;
-			const playerTurnId = data.player_turn_id;
 			const board = data.board;
-			console.log(board);
-			// Choose movement
+			const playerTurnId = data.player_turn_id;
+			console.log('PLAYER TURN ID: ', playerTurnId);
+			if (!Object.keys(this.games).includes(`${gameId}`)) {
+				this.games[`${gameId}`] = new Connect(4, 6, 7);
+			}
+			this.games[`${gameId}`].board = board;
+			for (let i = 0; i < 6; i++) {
+				for (let j = 0; j < 7; j++) {
+					if (this.games[`${gameId}`].board[i][j] == 0) {
+						// replace with null
+						this.games[`${gameId}`].board[i][j] = null;
+					}
+				}	
+			}
+			const ai = new ConnectAI(this.games[`${gameId}`], playerTurnId, playerTurnId == 1 ? 2 : 1);
 			// Emit the new movement
-			const movement = this.ai.getMovement()
+			const start = performance.now();
+			const movement = ai.getMovement()
+			const end = performance.now();
+			console.log('Time: ', end - start);
+			this.games[gameId].boardTouched = true;
+			this.games[gameId].apply(movement, playerTurnId);
+			this.games[gameId].drawBoard();
 
 			this.client.emit('play', {
 				tournament_id: this.tournamentId,

@@ -20,8 +20,8 @@ export default class Connect extends Game {
 		let finishedGame = this.gameFinished();
 		if (finishedGame.finished) {
 			if (finishedGame.winner === null) return 0;
-			if (finishedGame.winner === 1) return 1000000000000000;
-			if (finishedGame.winner === 2) return -100000000000000;
+			if (finishedGame.winner == 1) return 1000000000000000;
+			if (finishedGame.winner == 2) return -100000000000000;
 		} else {
 			throw new Error('Game is not finished');
 		}
@@ -101,6 +101,9 @@ export default class Connect extends Game {
 						count = 0;
 						foundItem = null;
 					}
+				} else {
+					count = 0;
+					foundItem = null;
 				}
 				if (count === this.k) return foundItem;
 			}
@@ -128,6 +131,9 @@ export default class Connect extends Game {
 						count = 0;
 						foundItem = null;
 					}
+				} else {
+					count = 0;
+					foundItem = null;
 				}
 			
 				if (count === this.k) return foundItem;

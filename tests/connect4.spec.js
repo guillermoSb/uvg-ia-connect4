@@ -68,6 +68,17 @@ describe('Connect4 Test', () => {
 
 	test('Validates Winner', () => {
 		// arrange
+		const game = new Connect(4, 6, 7);
+		// act
+		game.board[5] = ['O', 'X', null, 'X', 'X', 'X', 'O'];
+
+		const result = game.gameFinished()
+		// assert
+		expect(result.finished).toBe(false);
+	})
+
+	test('Validates Winner', () => {
+		// arrange
 		const game = new Connect(3,3,3);
 		// act
 		game.board[2] = ['X','X', 'X'];
