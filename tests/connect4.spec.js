@@ -1,4 +1,5 @@
-import Connect4 from "../Connect4";
+import Connect4 from "../games/Connect4.js";
+import Connect from "../games/Connect.js";
 
 describe('Connect4 Test', () => {
 	let connect4;
@@ -42,6 +43,39 @@ describe('Connect4 Test', () => {
 	});
 
 	test('Validates Winner', () => {
+		// arrange
+		const game = new Connect(4, 6, 7);
+		// act
+		game.board[5] = [null, 'O', 'O', 'X', 'X', 'X', 'X'];
 
+		const result = game.gameFinished()
+		// assert
+		expect(result.finished).toBe(true);
+		expect(result.winner).toBe('X')
 	})
+
+
+	test('Validates Winner', () => {
+		// arrange
+		const game = new Connect(4, 6, 7);
+		// act
+		game.board[5] = [null, 'O', 'X', 'O', 'X', 'X', 'O'];
+
+		const result = game.gameFinished()
+		// assert
+		expect(result.finished).toBe(false);
+	})
+
+	test('Validates Winner', () => {
+		// arrange
+		const game = new Connect(3,3,3);
+		// act
+		game.board[2] = ['X','X', 'X'];
+
+		const result = game.gameFinished()
+		// assert
+		expect(result.finished).toBe(true);
+	})
+
+
 });

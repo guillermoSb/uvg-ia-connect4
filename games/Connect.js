@@ -3,8 +3,8 @@ import Game from "./Game.js";
 export default class Connect extends Game {
 
 	playerDict = {
-		0: 'X',	// max
-		1: 'O'	// min
+		1: 'X',	// max
+		2: 'O'	// min
 	}
 
 	constructor(k, m, n, board = null) {
@@ -20,8 +20,8 @@ export default class Connect extends Game {
 		let finishedGame = this.gameFinished();
 		if (finishedGame.finished) {
 			if (finishedGame.winner === null) return 0;
-			if (finishedGame.winner === 'X') return 1000000000000000;
-			if (finishedGame.winner === 'O') return -100000000000000;
+			if (finishedGame.winner === 1) return 1000000000000000;
+			if (finishedGame.winner === 2) return -100000000000000;
 		} else {
 			throw new Error('Game is not finished');
 		}
@@ -94,6 +94,9 @@ export default class Connect extends Game {
 						count++;
 					} else if (foundItem === this.board[j][i]) {
 						count++;
+					} else if(foundItem !== this.board[j][i]) {
+						count = 1;
+						foundItem = this.board[j][i];
 					} else {
 						count = 0;
 						foundItem = null;
@@ -111,17 +114,22 @@ export default class Connect extends Game {
 			let count = 0;
 			let foundItem = null;
 			for (let j = 0; j < this.n; j++) {
+				
 				if(this.board[i][j] !== null) {
 					if (foundItem === null) {
 						foundItem = this.board[i][j];
 						count++;
 					} else if (foundItem === this.board[i][j]) {
 						count++;
+					} else if(foundItem !== this.board[i][j]) {
+						count = 1;
+						foundItem = this.board[i][j];
 					} else {
 						count = 0;
 						foundItem = null;
 					}
 				}
+			
 				if (count === this.k) return foundItem;
 			}
 			
@@ -164,7 +172,7 @@ export default class Connect extends Game {
 		if (this.validate(move)) {
 			for (let i = this.m - 1; i >= 0; i--) {
 				if (this.board[i][move] === null) {
-					this.board[i][move] = this.playerDict[player];
+					this.board[i][move] = player;
 					return {x: i, y: move};
 				}
 			}
@@ -191,7 +199,7 @@ export default class Connect extends Game {
 		let str = '';
 		for (let i = 0; i < this.m; i++) {
 			for (let j = 0; j < this.n; j++) {
-				str += this.board[i][j] ? this.board[i][j] : ' ';
+				str += this.playerDict[this.board[i][j]] ? this.playerDict[this.board[i][j]] : ' ';
 				str += '|';
 			}
 			str += '\n';
