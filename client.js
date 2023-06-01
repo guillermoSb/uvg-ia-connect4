@@ -58,13 +58,19 @@ export class Client {
 			const gameId = data.game_id;
 			const playerTurnId = data.player_turn_id;
 			const board = data.board;
-
 			console.log(board);
-
 			// Choose movement
 			// Emit the new movement
 			const movement = this.ai.getMovement()
-			this.client.emit()
+
+			this.client.emit('play', {
+				tournament_id: this.tournamentId,
+				player_turn_id: playerTurnId,
+				game_id: gameId,
+				board: board,
+				movement
+			});
+			
 		});
 
 		// Handle Finish Event

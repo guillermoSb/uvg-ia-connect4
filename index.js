@@ -1,8 +1,8 @@
-import {Client} from './Client.js';
-import Connect4 from './Connect4.js';
 
+import Connect4 from './games/Connect4.js';
 import readline from 'readline'
-import Connect4AI from './Connect4AI.js';
+import Connect4AI from './AI/Connect4AI.js';
+import TicTacToe from './games/TicTacToe.js';
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -15,12 +15,14 @@ const port = 4000;
 const userName = 'Guille';
 const tournamentId = 142857;
 
-const client = new Client(url, port, userName, tournamentId);
+// const client = new Client(url, port, userName, tournamentId);
 
 
-// const game = new Connect4();
-// const ai = new Connect4AI(game);
+const game = new TicTacToe();
+const ai = new Connect4AI(game);
 
+game.drawBoard()
+play()
 
 
 /**
@@ -29,31 +31,36 @@ const client = new Client(url, port, userName, tournamentId);
  * @param {*} player 
  */
 function play(player = 0) {
-	if (game.gameFinished() === false) {
+	
+	if (game.gameFinished().finished == false) {
 		if (player === 0) {
-				const movement = ai.getMovement();
-				game.makeMove(player, movement);
-				
-				game.drawBoard();
-				play(player === 0 ? 1 : 0);				
-		} else {
-			
-				rl.question('Next move? ', (answer) => { 
+					rl.question('Next move p1? ', (answer) => { 
 					const movement = parseInt(answer);
-					if (game.validMove(movement)) {
-						game.makeMove(player, movement);
+					if (game.validate(movement)) {
+						game.apply(movement, player);
 						game.drawBoard();
 						play(player === 0 ? 1 : 0);
 					} else {
 						console.log('Invalid move');
 						play(player);
 					}
-				});
+				});			
+		} else {
+				rl.question('Next move p1? ', (answer) => { 
+					const movement = parseInt(answer);
+					if (game.validate(movement)) {
+						game.apply(movement, player);
+						game.drawBoard();
+						play(player === 0 ? 1 : 0);
+					} else {
+						console.log('Invalid move');
+						play(player);
+					}
+				});	
 			}
 
 	} else {
 		console.log('Game finished');
-		
 		game.drawBoard();
 		rl.close();
 	}
