@@ -59,7 +59,7 @@ export default class ConnectAI extends Agent {
 					bestScore = score;
 				}
 			}
-		}	
+		}
 		return bestMove;
 	}
 
@@ -74,9 +74,17 @@ export default class ConnectAI extends Agent {
 		for (let i = 0; i < this.game.m; i++) {
 			for (let j = 0; j < this.game.n; j++) {
 				if (board[i][j] === this.player) {
-					score += this.game.n - i;
+					if (this.player == 1) {
+						score += this.game.n - i;
+					} else {
+						score -= this.game.n - i;
+					}
 				} else if (board[i][j] !== this.player) {
-					score -= this.game.n - i;
+					if (this.player == 1) {
+						score -= this.game.n - i;
+					} else { 
+						score += this.game.n - i;
+					}
 				}
 			}
 		}
@@ -88,9 +96,18 @@ export default class ConnectAI extends Agent {
 		// Feature 1
 		const { finished, winner } = this.game.gameFinished();
 		if (finished && winner === this.player) {
-			return Infinity;
+			if (this.player == 1) {
+				return Infinity;	
+			} else {
+				return -Infinity;
+			}
 		} else if (finished && winner !== this.player) {
-			return -Infinity;
+			if (this.player == 1) {
+
+				return -Infinity;
+			} else {
+				return Infinity;
+			}
 		}
 
 		// Feature 2
@@ -113,18 +130,30 @@ export default class ConnectAI extends Agent {
 			if (count == 3 && start > 0 && end < this.game.n - 1) {
 				// Absolute win
 				if (board[i][start - 1] === null && board[i][end + 1] === null) {
-					return Infinity;
+					if (this.player == 1) {
+						return Infinity;
+					} else {
+						return -Infinity;
+					}
 				}
 			} else if (count == 3 && (start == 0 || end == this.game.n - 1)) {
 				// Potential win
 				if (board[i][start - 1] === null || board[i][end + 1] === null) {
-					return 50000;
+					if (this.player == 1) {
+						return 50000;
+					} else {
+						return -50000;
+					}
 				}
 			}
 			if (count == 2 && (start - 1 > 0 || end + 1 < this.game.n - 2)) {
 				// Potential win
 				if (board[i][start - 2] === null || board[i][end + 2] === null) {
-					return 900000
+					if (this.player == 1) {
+						return 900000
+					} else {
+						return -900000;
+					}
 				}
 			}
 		}
@@ -155,11 +184,23 @@ export default class ConnectAI extends Agent {
 		let rowSpaces = Math.max(prevEmptySpacesUntilOtherPlayer, emptySpacesUntilOtherPlayer);
 		if (rowSpaces > 0) {
 			if (rowSpaces == 5) {
-				rowScore = 40000;
+				if (this.player == 1) {
+					rowScore = 40000;
+				} else {
+					rowScore = -40000;
+				}
 			} else if (rowSpaces == 4) {
-				rowScore = 30000;
+				if (this.player == 1) {
+					rowScore = 30000;
+				} else {
+					rowScore = -30000;
+				}
 			} else if (rowSpaces == 3 && playerInRow) {
-				rowScore = 20000;
+				if (this.player == 1) {
+					rowScore = 20000;
+				} else {
+					rowScore = -20000;
+				}
 			}
 		}
 
@@ -190,16 +231,33 @@ export default class ConnectAI extends Agent {
 		let columnSpaces = Math.max(prevEmptySpacesUntilOtherPlayerColumn, emptySpacesUntilOtherPlayerColumn);
 		if (columnSpaces > 0) {
 			if (columnSpaces == 5) {
-				columnScore = 40000;
+				if(this.player == 1){
+					columnScore = 40000;
+				} else {
+					columnScore = -40000;
+				}
 			} else if (columnSpaces == 4) {
-				columnScore = 30000;
+				if(this.player == 1){
+					columnScore = 30000;
+				} else {
+					columnScore = -30000;
+				}
 			} else if (columnSpaces == 3 && playerInColumn) {
-				columnScore = 20000;
+				if(this.player == 1){
+					columnScore = 20000;
+				} else {
+					columnScore = -20000;
+				}
 			}
 		}
 
 		if (columnScore > 0 || rowScore > 0) {
-			return Math.max(columnScore, rowScore);
+			if (this.player == 1) {
+				return Math.max(columnScore, rowScore);
+			} else {
+				return Math.min(columnScore, rowScore);
+			}
+
 		}
 
 		// Feature 4
@@ -229,10 +287,18 @@ export default class ConnectAI extends Agent {
 			}
 		}
 
-		if (playerIn3Column) return 200
-		if (playerInColumn0Or6) return 40
-		if (playerInColumn1Or5) return 70
-		if (playerInColumn2Or4) return 120
+		if (playerIn3Column && this.player == 1) return 200
+		if (playerIn3Column && this.player != 1) return -200
+		
+		if (playerInColumn0Or6 && this.player == 1) return 40
+		if (playerInColumn0Or6 && this.player != 1) return -40
+		
+		if (playerInColumn1Or5 && this.player == 1) return 70
+		if (playerInColumn1Or5 && this.player != 1) return -70
+		
+
+		if (playerInColumn2Or4 && this.player == 1) return 120
+		if (playerInColumn2Or4 && this.player != 1) return -120
 
 
 		return this.heuristic0(board);

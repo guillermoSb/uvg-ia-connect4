@@ -60,7 +60,6 @@ export default class Client {
 			const gameId = data.game_id;
 			const board = data.board;
 			const playerTurnId = data.player_turn_id;
-			console.log('PLAYER TURN ID: ', playerTurnId);
 			if (!Object.keys(this.games).includes(`${gameId}`)) {
 				this.games[`${gameId}`] = new Connect(4, 6, 7);
 			}
@@ -78,10 +77,8 @@ export default class Client {
 			const start = performance.now();
 			const movement = ai.getMovement()
 			const end = performance.now();
-			console.log('Time: ', end - start);
 			this.games[gameId].boardTouched = true;
 			this.games[gameId].apply(movement, playerTurnId);
-			this.games[gameId].drawBoard();
 
 			this.client.emit('play', {
 				tournament_id: this.tournamentId,
@@ -95,7 +92,9 @@ export default class Client {
 
 		// Handle Finish Event
 		this.client.on('finish', (data) => {
-			console.info('Game finished.');
+			console.info('Game finished.', data);
+			this.games[`${data.game_id}`].board = data.board;
+			this.games[`${data.game_id}`].drawBoard();
 			this.client.emit('player_ready', { tournament_id: this.tournamentId, player_turn_id: data.player_turn_id, game_id: data.game_id });
 		}
 		);
