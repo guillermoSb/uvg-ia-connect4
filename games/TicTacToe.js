@@ -4,8 +4,8 @@ import Game from './Game.js';
 export default class TicTacToe extends Game {
 
 	playerDict = {
-		0: 'X',
-		1: 'O'
+		0: 'X',	// max
+		1: 'O'	// min
 	}
 	
 	constructor() {
@@ -81,7 +81,6 @@ export default class TicTacToe extends Game {
 	gameFinished() {
 		// Check if there is a winner
 		let winner = this.getWinner();
-		console.log('WINNER IS', this.getWinner())
 		if (winner !== null) return {finished: true, winner: winner};
 		// Check if there is a draw
 		if (this.isDraw()) return {finished: true, winner: null};
@@ -139,6 +138,7 @@ export default class TicTacToe extends Game {
 	}
 
 	drawBoard() {
+		
 		let board = '';
 		for (let i = 0; i < 3; i++) {
 			let row = this.board[i];
@@ -150,6 +150,12 @@ export default class TicTacToe extends Game {
 			}
 			if (i < 2) board += '\n-----\n';
 		}
-		console.log(board);
+		console.log(board)
+	}
+
+	undoMove(move) {
+		const x = Math.floor(move / 3);
+		const y = move % 3;
+		this.board[x][y] = null;
 	}
 }

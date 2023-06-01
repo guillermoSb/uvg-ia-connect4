@@ -1,8 +1,7 @@
 
 
 export default class Agent {
-	constructor(isMax = true, game) {
-		this.isMax = isMax;
+	constructor(game ) {
 		this.game = game
 	}
 
