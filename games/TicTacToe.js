@@ -74,19 +74,6 @@ export default class TicTacToe extends Game {
 		}
 	}
 
-	/**
-	 * Checks if the game is finished
-	 * @returns {boolean, number}
-	 */
-	gameFinished() {
-		// Check if there is a winner
-		let winner = this.getWinner();
-		if (winner !== null) return {finished: true, winner: winner};
-		// Check if there is a draw
-		if (this.isDraw()) return {finished: true, winner: null};
-		// The game is not finished
-		return {finished: false, winner: null};
-	}
 
 	getWinner() {
 		// Check rows
@@ -94,6 +81,7 @@ export default class TicTacToe extends Game {
 		if (winner !== false) return winner;
 		// Check columns
 		winner = this.checkColumns();
+		console.log('cols', this.checkColumns)
 		if (winner !== false) return winner;
 		// Check diagonals
 		winner = this.checkDiagonals();

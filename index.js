@@ -4,6 +4,10 @@ import readline from 'readline'
 import Connect4AI from './AI/Connect4AI.js';
 import TicTacToe from './games/TicTacToe.js';
 import TicTacToeAI from './AI/TicTacToeAI.js';
+import Connect from './games/Connect.js';
+import ConnectAI from './AI/ConnectAI.js';
+import {performance} from 'perf_hooks'
+
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -19,8 +23,8 @@ const tournamentId = 142857;
 // const client = new Client(url, port, userName, tournamentId);
 
 
-const game = new TicTacToe();
-const ai = new TicTacToeAI(game, true);
+const game = new Connect(4,6,7)
+const ai = new ConnectAI(game, game.playerDict[0]);
 
 play()
 
@@ -34,22 +38,23 @@ function play(player = 0) {
 	
 	if (game.gameFinished().finished == false) {
 		if (player === 0) {
+			const startTime = performance.now();
 			let bestMove = null;
 			let bestScore = -Infinity;
-				for (let i = 0; i < 9; i++) {
+				for (let i = 0; i < 7; i++) {
 					if (game.validate(i)) {
-						game.apply(i, player);
-						const score = ai.miniMax(false);
-						game.undoMove(i);
+						const move = game.apply(i, player);
+						const score = ai.miniMax(false, -Infinity, Infinity);
+						game.undoMove(move);
 						if (score > bestScore) {
 							bestMove = i;
 							bestScore = score;
 						}
 					}			
 			}	
-			console.log('BEST SCORE', bestScore)
+			const endTime = performance.now();
+			console.log(`Time: ${endTime - startTime} ms`);
 			game.apply(bestMove, player);
-			
 			play(player === 0 ? 1 : 0);
 		} else {
 				game.drawBoard();
@@ -59,7 +64,6 @@ function play(player = 0) {
 						game.apply(movement, player);
 						play(player === 0 ? 1 : 0);
 					} else {
-						console.log('Invalid move');
 						play(player);
 					}
 				});	

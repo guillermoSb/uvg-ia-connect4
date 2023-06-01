@@ -26,12 +26,21 @@ export default class Game {
 	}
 
 	gameFinished() {
-		throw new Error('Not Implemented')
+		// Check if there is a winner
+		let winner = this.getWinner();
+		if (winner !== null) return {finished: true, winner: winner};
+		// Check if there is a draw
+		if (this.isDraw()) return {finished: true, winner: null};
+		// The game is not finished
+		return {finished: false, winner: null};
 	}
 
 	getWinner() {
 		throw new Error('Not Implemented')
 	}
 	
+	isDraw() {
+		throw new Error('Not Implemented')
+	}
 
 }
